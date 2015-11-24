@@ -72,7 +72,7 @@ module.exports = (robot) ->
               }
               'description': {
                 key: 'Description',
-                value: ( (inc_desc.toUpperCase() is "Y")?json.fields.description:null ) || null
+                value: json.fields.description || null
               }
               'assignee': {
                 key: 'Assignee',
@@ -90,18 +90,18 @@ module.exports = (robot) ->
                 key: 'Status',
                 value: (json.fields.status && json.fields.status.name) || null
               }
-              # GSG Specific
               'county': {
                 key: 'County',
                 value: (json.fields.customfield_12424 && json.fields.customfield_12424
                        .map (item) ->
                             item.value
-                       .join (", ") ) || null                       
+                       .join (", ") 
+                       ) || "n/a"
               }
             }
 
             # Single Line Summary
-            fallback = "#{data.key.value}: #{data.summary.value} [#{data.status.value}; assigned to #{data.assignee.value}; #{data.county.value};] #{data.link.value}" 
+            fallback = "#{data.key.value}: #{data.summary.value} [#{data.status.value}; assigned to #{data.assignee.value}; county #{data.county.value};] #{data.link.value}" 
 
             if process.env.HUBOT_SLACK_INCOMING_WEBHOOK? 
               robot.emit 'slack.attachment',
@@ -112,7 +112,8 @@ module.exports = (robot) ->
                   title_link: data.link.value
                   text: data.description.value
                   fields: [
-                    { title: data.county.key
+                    {
+                      title: data.county.key
                       value: data.county.value
                       short: true
                     }
@@ -132,7 +133,7 @@ module.exports = (robot) ->
                       short: true
                     }
                     {
-                      title: data.created.key
+                      Title: data.created.key
                       value: data.created.value
                       short: true
                     }
