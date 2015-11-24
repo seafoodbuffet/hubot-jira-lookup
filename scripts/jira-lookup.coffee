@@ -12,7 +12,7 @@
 #   HUBOT_JIRA_LOOKUP_INC_DESC
 #   HUBOT_JIRA_LOOKUP_MAX_DESC_LEN
 #   HUBOT_JIRA_LOOKUP_SIMPLE
-#
+#   HUBOT_JIRA_LOOKUP_STYLE ( long (default) or short )
 #
 # Commands:
 #   None
@@ -72,7 +72,7 @@ module.exports = (robot) ->
               }
               'description': {
                 key: 'Description',
-                value: json.fields.description || null
+                value: ( (inc_desc.toUpperCase() is "Y")?json.fields.description:null ) || null
               }
               'assignee': {
                 key: 'Assignee',
@@ -90,17 +90,20 @@ module.exports = (robot) ->
                 key: 'Status',
                 value: (json.fields.status && json.fields.status.name) || null
               }
+              # GSG Specific
+              'county': {
+                key: 'County',
+                value: (json.fields.customfield_12424 && json.fields.customfield_12424
+                       .map (item) ->
+                            item.value
+                       .join (", ") ) || null                       
+              }
             }
 
-            fallback = "Issue:\t #{data.key.value}: #{data.summary.value}\n"
-            if data.description.value? and inc_desc.toUpperCase() is "Y"
-              if max_len and data.description.value?.length > max_len
-                fallback += "Description:\t #{data.description.value.substring(0,max_len)} ...\n"
-              else
-                fallback += "Description:\t #{data.description.value}\n"
-            fallback += "Assignee:\t #{data.assignee.value}\nStatus:\t #{data.status.value}\nLink:\t #{data.link.value}\n"
+            # Single Line Summary
+            fallback = "#{data.key.value}: #{data.summary.value} [#{data.status.value}; assigned to #{data.assignee.value}; #{data.county.value};] #{data.link.value}" 
 
-            if process.env.HUBOT_SLACK_INCOMING_WEBHOOK?
+            if process.env.HUBOT_SLACK_INCOMING_WEBHOOK? 
               robot.emit 'slack.attachment',
                 message: msg.message
                 content:
@@ -109,6 +112,10 @@ module.exports = (robot) ->
                   title_link: data.link.value
                   text: data.description.value
                   fields: [
+                    { title: data.county.key
+                      value: data.county.value
+                      short: true
+                    }
                     {
                       title: data.reporter.key
                       value: data.reporter.value
