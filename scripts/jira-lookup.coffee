@@ -59,9 +59,9 @@ module.exports = (robot) ->
 
     issue = msg.match[0]
 
-    return if CheckLastHeard (msg.channel, issue)   #Heard too recently
+    return if CheckLastHeard (msg.channel.name, issue)   #Heard too recently
 
-    RecordLastHeard (msg.channel,issue)
+    RecordLastHeard (msg.channel.name, issue)
 
     if process.env.HUBOT_JIRA_LOOKUP_SIMPLE is "true"
       msg.send "Issue: #{issue} - #{process.env.HUBOT_JIRA_LOOKUP_URL}/browse/#{issue}"
