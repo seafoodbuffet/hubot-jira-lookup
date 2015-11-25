@@ -58,10 +58,13 @@ module.exports = (robot) ->
     return if msg.message.user.name.match(new RegExp(ignored_users, "gi"))
 
     issue = msg.match[0]
+    room  = msg.message.user.reply_to || msg.message.user.room
+    
+    @robot.logger.debug "Issue: #{issue} in channel #{room}"
 
-    return if CheckLastHeard (msg.channel.name, issue)   #Heard too recently
+    return if CheckLastHeard(room, issue)
 
-    RecordLastHeard (msg.channel.name, issue)
+    RecordLastHeard room, issue
 
     if process.env.HUBOT_JIRA_LOOKUP_SIMPLE is "true"
       msg.send "Issue: #{issue} - #{process.env.HUBOT_JIRA_LOOKUP_URL}/browse/#{issue}"
