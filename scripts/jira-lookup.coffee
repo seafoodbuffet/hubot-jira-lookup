@@ -58,11 +58,11 @@ module.exports = (robot) ->
 
   console.log "Ignore Users: #{ignored_users}"
 
-  robot.hear /\b[a-zA-Z]{2,12}-[0-9]{1,10}\b/, (msg) ->
+  robot.hear /\b([a-zA-Z]{2,12}-[0-9]{1,10})[a-z]?\b/, (msg) ->
 
     return if msg.message.user.name.match(new RegExp(ignored_users, "gi"))
 
-    issue = msg.match[0]
+    issue = msg.match[1]
     room  = msg.message.user.reply_to || msg.message.user.room
     
     @robot.logger.debug "Issue: #{issue} in channel #{room}"
