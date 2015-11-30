@@ -31,17 +31,22 @@
 # 
 LastHeard = {}
 
-RecordLastHeard = (channel,ticket) ->
+RecordLastHeard = (robot,channel,ticket) ->
   ts = new Date()
   key = "#{channel}-#{ticket}"
   LastHeard[key] = ts
 
-CheckLastHeard = (channel,ticket) ->
+CheckLastHeard = (robot,channel,ticket) ->
   now = new Date()
   key = "#{channel}-#{ticket}"
-  last = LastHeard[key]
-  timeout =  process.env.HUBOI_JIRA_LOOKUP_TIMEOUT
-  if (now - last) < (1000 * 60 * timeout)
+  last = LastHeard[key] || 0
+  timeout =  process.env.HUBOT_JIRA_LOOKUP_TIMEOUT || 15
+  limit = (1000 * 60 * timeout)
+  diff = now - last
+
+  @robot.logger.debug "Check: #{key} #{diff} #{limit}"
+  
+  if diff < limit
     return yes
   no
 
@@ -62,9 +67,9 @@ module.exports = (robot) ->
     
     @robot.logger.debug "Issue: #{issue} in channel #{room}"
 
-    return if CheckLastHeard(room, issue)
+    return if CheckLastHeard(robot, room, issue)
 
-    RecordLastHeard room, issue
+    RecordLastHeard robot, room, issue
 
     if process.env.HUBOT_JIRA_LOOKUP_SIMPLE is "true"
       msg.send "Issue: #{issue} - #{process.env.HUBOT_JIRA_LOOKUP_URL}/browse/#{issue}"
