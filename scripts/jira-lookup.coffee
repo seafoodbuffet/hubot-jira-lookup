@@ -184,9 +184,9 @@ module.exports = (robot) ->
                   fallback += "Description:\t #{data.description.value.substring(0,max_len)} ...\n"
                 else
                   fallback += "Description:\t #{data.description.value}\n"
-              fallback += "Assignee:\t #{data.assignee.value}\nStatus:\t #{data.status.value}\nLink:\t #{data.link.value}\n"
+              fallback += "County:\t #{data.county.value}\nAssignee:\t #{data.assignee.value}\nStatus:\t #{data.status.value}\nLink:\t #{data.link.value}\n"
             else
-              fallback = "#{data.key.value}: #{data.summary.value} [status #{data.status.value}; assigned to #{data.assignee.value} ] #{data.link.value}"
+              fallback = "#{data.key.value}: #{data.summary.value} [status #{data.status.value}; assigned to #{data.assignee.value}; county: #{data.county.value} ] #{data.link.value}"
             
 
             if process.env.HUBOT_SLACK_INCOMING_WEBHOOK?
@@ -232,7 +232,7 @@ module.exports = (robot) ->
                     fallback: fallback
                     title: "#{data.key.value}: #{data.summary.value}"
                     title_link: data.link.value
-                    text: "Status: #{data.status.value}; Assigned: #{data.assignee.value}"
+                    text: "Status: #{data.status.value}; Assigned: #{data.assignee.value}; County: #{data.county.value}"
             else
               msg.send fallback
           catch error
