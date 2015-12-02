@@ -198,6 +198,7 @@ module.exports = (robot) ->
                     title: "#{data.key.value}: #{data.summary.value}"
                     title_link: data.link.value
                     text: data.description.value
+                    mrkdwn_in: ["text"]
                     fields: [
                       {
                         title: data.county.key
@@ -232,7 +233,8 @@ module.exports = (robot) ->
                     fallback: fallback
                     title: "#{data.key.value}: #{data.summary.value}"
                     title_link: data.link.value
-                    text: "Status: #{data.status.value}; Assigned: #{data.assignee.value}; County: #{data.county.value}"
+                    text: "*Status*: #{data.status.value}; *Assigned*: #{data.assignee.value}; *County*: #{data.county.value}"
+                    mrkdwn_in: ["text"]
             else
               msg.send fallback
           catch error
