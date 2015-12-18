@@ -100,7 +100,7 @@ module.exports = (robot) ->
   robot.respond /set jira_lookup_style (long|short)/, (msg) ->
     SetRoomStylePref robot, msg, msg.match[1]
 
-  robot.hear /\b[a-zA-Z]{2,12}-[0-9]{1,10}\b/g, (msg) ->
+  robot.hear /\b([a-zA-Z]{2,12}-[0-9]{1,10})[a-z]*\b/g, (msg) ->
 
     return if msg.message.user.name.match(new RegExp(ignored_users, "gi"))
 
