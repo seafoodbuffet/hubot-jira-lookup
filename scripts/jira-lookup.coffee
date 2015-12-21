@@ -176,7 +176,7 @@ reportIssue = (robot, msg, issue) ->
             }
             'county': {
               key: 'County',
-              value: (json.fields.customfield_12424 && json.fields.customfield_12424
+              value: (json.fields.customfield_12424? && json.fields.customfield_12424
                      .map (item) ->
                           item.value
                      .join (", ") 
@@ -235,13 +235,16 @@ reportIssue = (robot, msg, issue) ->
                     }
                   ]
             else
+              county = ""
+              county = "; County: #{data.county.value} " if data.county.value? and data.county.value isnt "n/a"
+
               robot.emit 'slack.attachment',
                 message: msg.message
                 content:
                   fallback: fallback
                   title: "#{data.key.value}: #{data.summary.value}"
                   title_link: data.link.value
-                  text: "Status: #{data.status.value}; Assigned: #{data.assignee.value}"
+                  text: "Status: #{data.status.value}; Assigned: #{data.assignee.value}#{county}"
           else
             msg.send fallback
         catch error
