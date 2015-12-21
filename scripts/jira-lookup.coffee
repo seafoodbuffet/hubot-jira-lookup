@@ -83,7 +83,9 @@ difference = (obj1, obj2) ->
     diff[room] = pref if room !of obj2
   return diff
   
-
+#Used to remove the trailing letter from GSG lettered CS
+removeLetter = (issue) ->
+  return issue.replace /[a-z]+$/, ""
   
 
 module.exports = (robot) ->
@@ -100,7 +102,7 @@ module.exports = (robot) ->
   robot.respond /set jira_lookup_style (long|short)/, (msg) ->
     SetRoomStylePref robot, msg, msg.match[1]
 
-  robot.hear /\b([a-zA-Z]{2,12}-[0-9]{1,10})[a-z]*\b/g, (msg) ->
+  robot.hear /\b[a-zA-Z]{2,12}-[0-9]{1,10}[a-z]*\b/g, (msg) ->
 
     return if msg.message.user.name.match(new RegExp(ignored_users, "gi"))
 
@@ -111,7 +113,9 @@ module.exports = (robot) ->
 
 reportIssue = (robot, msg, issue) ->
   room  = msg.message.user.reply_to || msg.message.user.room
-    
+
+  issue = removeLetter issue
+ 
   @robot.logger.debug "Issue: #{issue} in channel #{room}"
 
   return if CheckLastHeard(robot, room, issue)
