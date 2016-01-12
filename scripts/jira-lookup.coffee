@@ -244,7 +244,7 @@ reportIssue = (robot, msg, issue) ->
                   fallback: fallback
                   title: "#{data.key.value}: #{data.summary.value}"
                   title_link: data.link.value
-                  text: "Status: #{data.status.value}; Assigned: #{data.assignee.value}#{county}"
+                  text: "Status: #{data.status.value}; Assigned: #{data.assignee.value};Reporter: #{data.reporter.value}#{county}"
           else
             msg.send fallback
         catch error
