@@ -43,7 +43,7 @@ CheckLastHeard = (robot,channel,ticket) ->
   limit = (1000 * 60 * timeout)
   diff = now - last
 
-  @robot.logger.debug "Check: #{key} #{diff} #{limit}"
+  robot.logger.debug "Check: #{key} #{diff} #{limit}"
   
   if diff < limit
     return yes
@@ -106,7 +106,7 @@ module.exports = (robot) ->
 
     return if msg.message.user.name.match(new RegExp(ignored_users, "gi"))
 
-    @robot.logger.debug "Matched: "+msg.match.join(',')
+    robot.logger.debug "Matched: "+msg.match.join(',')
 
     reportIssue robot, msg, issue for issue in msg.match
 
@@ -116,7 +116,8 @@ reportIssue = (robot, msg, issue) ->
 
   issue = removeLetter issue
  
-  @robot.logger.debug "Issue: #{issue} in channel #{room}"
+  robot.logger.debug "Issue: #{issue} in channel #{room}"
+
 
   return if CheckLastHeard(robot, room, issue)
 
