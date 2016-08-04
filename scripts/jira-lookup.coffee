@@ -186,46 +186,47 @@ reportIssue = (robot, msg, issue) ->
             fallback = "#{data.key.value}: #{data.summary.value} [status #{data.status.value}; assigned to #{data.assignee.value} ] #{data.link.value}"
             
 
-          if process.env.HUBOT_SLACK_INCOMING_WEBHOOK?
-            if style is "long"
-              robot.emit 'slack.attachment',
-                message: msg.message
-                content:
-                  fallback: fallback
-                  title: "#{data.key.value}: #{data.summary.value}"
-                  title_link: data.link.value
-                  text: data.description.value
-                  fields: [
-                    {
-                      title: data.reporter.key
-                      value: data.reporter.value
-                      short: true
-                    }
-                    {
-                      title: data.assignee.key
-                      value: data.assignee.value
-                      short: true
-                    }
-                    {
-                      title: data.status.key
-                      value: data.status.value
-                      short: true
-                    }
-                    {
-                      title: data.created.key
-                      value: data.created.value
-                      short: true
-                    }
-                  ]
-            else
-              robot.emit 'slack.attachment',
-                message: msg.message
-                content:
+          if style is "long"
+            message = {
+              attachments: [
+                fallback: fallback
+                title: "#{data.key.value}: #{data.summary.value}"
+                title_link: data.link.value
+                text: data.description.value
+                fields: [
+                  {
+                    title: data.reporter.key
+                    value: data.reporter.value
+                    short: true
+                  }
+                  {
+                    title: data.assignee.key
+                    value: data.assignee.value
+                    short: true
+                  }
+                  {
+                    title: data.status.key
+                    value: data.status.value
+                    short: true
+                  }
+                  {
+                    title: data.created.key
+                    value: data.created.value
+                    short: true
+                  }
+                ]
+              ]
+            }                
+          else
+            message = {
+                attachments: [
                   fallback: fallback
                   title: "#{data.key.value}: #{data.summary.value}"
                   title_link: data.link.value
                   text: "Status: #{data.status.value}; Assigned: #{data.assignee.value}"
-          else
-            msg.send fallback
+                ]
+              }
+          message.as_user = true
+          msg.send message
         catch error
           console.log error
