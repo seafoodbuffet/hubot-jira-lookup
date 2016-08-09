@@ -226,7 +226,6 @@ reportIssue = (robot, msg, issue) ->
                   text: "Status: #{data.status.value}; Assigned: #{data.assignee.value}"
                 ]
               }
-          message.as_user = true
           msg.send message
         catch error
           console.log error
