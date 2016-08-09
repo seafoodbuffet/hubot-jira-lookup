@@ -198,55 +198,57 @@ reportIssue = (robot, msg, issue) ->
           else
             fallback = "#{data.key.value}: #{data.summary.value} [status #{data.status.value}; assigned to #{data.assignee.value}; county: #{data.county.value} ] #{data.link.value}"
             
-
-          if process.env.HUBOT_SLACK_INCOMING_WEBHOOK?
-            if style is "long"
-              robot.emit 'slack.attachment',
-                message: msg.message
-                content:
-                  fallback: fallback
-                  title: "#{data.key.value}: #{data.summary.value}"
-                  title_link: data.link.value
-                  text: data.description.value
-                  fields: [
-                    {
-                      title: data.county.key
-                      value: data.county.value
-                      short: true
-                    }                    
-                    {
-                      title: data.reporter.key
-                      value: data.reporter.value
-                      short: true
-                    }
-                    {
-                      title: data.assignee.key
-                      value: data.assignee.value
-                      short: true
-                    }
-                    {
-                      title: data.status.key
-                      value: data.status.value
-                      short: true
-                    }
-                    {
-                      title: data.created.key
-                      value: data.created.value
-                      short: true
-                    }
-                  ]
-            else
-              county = ""
-              county = "; County: #{data.county.value} " if data.county.value? and data.county.value isnt "n/a"
-
-              robot.emit 'slack.attachment',
-                message: msg.message
-                content:
+          if style is "long"
+            message = {
+              attachments: [
+                fallback: fallback
+                title: "#{data.key.value}: #{data.summary.value}"
+                title_link: data.link.value
+                text: data.description.value
+                fields: [
+                  {
+                    title: data.county.key
+                    value: data.county.value
+                    short: true
+                  }
+                  {
+                    title: data.reporter.key
+                    value: data.reporter.value
+                    short: true
+                  }
+                  {
+                    title: data.assignee.key
+                    value: data.assignee.value
+                    short: true
+                  }
+                  {
+                    title: data.status.key
+                    value: data.status.value
+                    short: true
+                  }
+                  {
+                    title: data.created.key
+                    value: data.created.value
+                    short: true
+                  }
+                ]
+              ]
+            }                
+          else
+            county = ""
+            county = "; County: #{data.county.value} " if data.county.value? and data.county.value isnt "n/a"
+                            
+            message = {
+                attachments: [
                   fallback: fallback
                   title: "#{data.key.value}: #{data.summary.value}"
                   title_link: data.link.value
                   text: "Status: #{data.status.value}; Assigned: #{data.assignee.value};Reporter: #{data.reporter.value}#{county}"
-          else
-            msg.send fallback
+                ]
+              }
+              
+          msg.send message
+
         catch error
           console.log error
+
