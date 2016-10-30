@@ -32,5 +32,5 @@ There are also optional configuration values.
 * `HUBOT_JIRA_LOOKUP_MAX_DESC_LEN` - allows you to display only the first 'x' characters from the description field
 * `HUBOT_JIRA_LOOKUP_IGNORE_USERS` - allows you to ignore messages from pre-defined users. The format of this option is user1|user2|user3 Default is to ignore from users named "jira" and "github", casing is ignored.
 * `HUBOT_JIRA_LOOKUP_TIMEOUT` - allows you to set the time, in minutes, between mentions of a specific ticket in a specific channel/room. Defaults to 15 minutes
-* `HUBOT_JIRA_PROJECTS` - List of projects to match. By default, in non-simple mode, the matches are the project keys of all projects on the JIRA server. This variable allows you to match only a subset of those. The format for this is PROJECT1|PROJECT2|PROJECT3
-* `HUBOT_JIRA_IGNORECASE` - If set to Y, matches ticket mentions ignoring case, otherwise, you must mention the ticket using the case for the KEY (typically all uppercase, e.g. JIRA-131). SIMPLE mode always matches ignoring case
+* `HUBOT_JIRA_LOOKUP_PROJECTS` - List of projects to match. By default, in non-simple mode, the matches are the project keys of all projects on the JIRA server. This variable allows you to match only a subset of those. The format for this is PROJECT1|PROJECT2|PROJECT3
+* `HUBOT_JIRA_LOOKUP_IGNORECASE` - If set to Y, matches ticket mentions ignoring case, otherwise, you must mention the ticket using the case for the KEY (typically all uppercase, e.g. JIRA-131). SIMPLE mode always matches ignoring case

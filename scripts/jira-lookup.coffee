@@ -13,8 +13,8 @@
 #   HUBOT_JIRA_LOOKUP_MAX_DESC_LEN
 #   HUBOT_JIRA_LOOKUP_SIMPLE
 #   HUBOI_JIRA_LOOKUP_TIMEOUT
-#   HUBOT_JIRA_PROJECTS (optional, list of projects to match (if they exist) format "PROJECT1|PROJECT2")
-#   HUBOT_JIRA_IGNORECASE (optional, ignore case when looking for issue references, default is N)
+#   HUBOT_JIRA_LOOKUP_PROJECTS (optional, list of projects to match (if they exist) format "PROJECT1|PROJECT2")
+#   HUBOT_JIRA_LOOKUP_IGNORECASE (optional, ignore case when looking for issue references, default is N)
 #
 # Commands:
 #   hubot set jira_lookup_style [long|short]
@@ -121,7 +121,7 @@ module.exports = (robot) ->
       .get() (err, res, body) ->
         json = JSON.parse(body)
         jiraPrefixes = ( entry.key for entry in json )
-        jiraProjects = process.env.HUBOT_JIRA_PROJECTS
+        jiraProjects = process.env.HUBOT_JIRA_LOOKUP_PROJECTS
 
         if jiraProjects != undefined && jiraProjects.length > 0
           robot.logger.debug "JIRA_PROJECTS: " + jiraProjects
