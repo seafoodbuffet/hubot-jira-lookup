@@ -119,6 +119,7 @@ module.exports = (robot) ->
       .auth(auth)
       .headers(Accept: 'application/json')
       .get() (err, res, body) ->
+        robot.logger.debug "Projects JSON: \n" + body
         json = JSON.parse(body)
         jiraPrefixes = ( entry.key for entry in json )
         jiraProjects = process.env.HUBOT_JIRA_LOOKUP_PROJECTS
@@ -193,6 +194,10 @@ reportIssue = (robot, url, auth, msg, issue) ->
               key: 'Created',
               value: json.fields.created && (new Date(json.fields.created)).toLocaleString() || null
             }
+            'updated': {
+              key: 'Updated',
+              value: json.fields.updated && (new Date(json.fields.updated)).toLocaleString() || null
+            }
             'status': {
               key: 'Status',
               value: (json.fields.status && json.fields.status.name) || null
@@ -214,35 +219,38 @@ reportIssue = (robot, url, auth, msg, issue) ->
 
 
           if style is "long"
-            message = {
-              attachments: [
-                fallback: fallback
-                title: "#{data.key.value}: #{data.summary.value}"
-                title_link: data.link.value
-                text: data.description.value
-                fields: [
-                  {
-                    title: data.reporter.key
-                    value: data.reporter.value
-                    short: true
-                  }
-                  {
-                    title: data.assignee.key
-                    value: data.assignee.value
-                    short: true
-                  }
-                  {
-                    title: data.status.key
-                    value: data.status.value
-                    short: true
-                  }
-                  {
-                    title: data.created.key
-                    value: data.created.value
-                    short: true
-                  }
-                ]
+            attachment = {
+              fallback: fallback
+              title: "#{data.key.value}: #{data.summary.value}"
+              title_link: data.link.value
+              fields: [
+                {
+                  title: data.reporter.key
+                  value: data.reporter.value
+                  short: true
+                }
+                {
+                  title: data.assignee.key
+                  value: data.assignee.value
+                  short: true
+                }
+                {
+                  title: data.status.key
+                  value: data.status.value
+                  short: true
+                }
+                {
+                  title: data.updated.key
+                  value: data.updated.value
+                  short: true
+                }
               ]
+            }
+            if inc_desc.toUpperCase() is "Y"
+              attachment.text = data.description.value
+
+            message = {
+              attachments: [ attachment ]
             }
           else
             message = {
